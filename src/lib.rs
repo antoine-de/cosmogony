@@ -19,15 +19,17 @@ mod utils;
 pub mod cosmogony;
 pub mod zone_typer;
 
+pub use cosmogony::Cosmogony;
+pub use zone::{Zone, ZoneIndex, ZoneType};
+
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use cosmogony::{Cosmogony, CosmogonyMetadata, CosmogonyStats};
+use cosmogony::{CosmogonyMetadata, CosmogonyStats};
 use osmpbfreader::{OsmObj, OsmPbfReader};
 use std::collections::BTreeMap;
 use hierarchy_builder::build_hierarchy;
 use failure::Error;
 use failure::ResultExt;
-use zone::ZoneIndex;
 use country_finder::CountryFinder;
 
 #[cfg_attr(rustfmt, rustfmt_skip)]

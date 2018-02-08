@@ -2,19 +2,18 @@ extern crate geo;
 extern crate geojson;
 extern crate geos;
 extern crate itertools;
-extern crate mimir;
-extern crate mimirsbrunn;
 extern crate serde;
 
 use self::itertools::Itertools;
-use self::mimir::Coord;
 use osmpbfreader::objects::{OsmId, OsmObj, Relation, Tags};
-use self::mimirsbrunn::boundaries::{build_boundary, make_centroid};
+use osm_boundaries_utils::build_boundary;
 use std::collections::BTreeMap;
 use self::geos::GGeom;
 use self::serde::Serialize;
 use std::fmt;
+use geo::Point;
 
+type Coord = Point<f64>;
 
 #[derive(Serialize, Deserialize, Copy, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[serde(rename_all = "snake_case")]
@@ -46,6 +45,7 @@ pub struct Zone {
     #[serde(serialize_with = "serialize_as_geojson", deserialize_with = "deserialize_as_geojson",
             rename = "geometry", default)]
     pub boundary: Option<geo::MultiPolygon<f64>>,
+
     pub tags: Tags,
 
     pub parent: Option<ZoneIndex>,
@@ -115,20 +115,20 @@ impl Zone {
         objects: &BTreeMap<OsmId, OsmObj>,
         index: ZoneIndex,
     ) -> Option<Self> {
+        use geo::centroid::Centroid;
         Self::from_osm(relation, index).map(|mut result| {
             result.boundary = build_boundary(relation, objects);
 
-            result.center = Some(
-                relation
-                    .refs
-                    .iter()
-                    .find(|r| r.role == "admin_centre")
-                    .and_then(|r| objects.get(&r.member))
-                    .and_then(|o| o.node())
-                    .map_or(make_centroid(&result.boundary), |node| {
-                        mimir::Coord::new(node.lat(), node.lon())
-                    }),
-            );
+            result.center = relation
+                .refs
+                .iter()
+                .find(|r| r.role == "admin_centre")
+                .and_then(|r| objects.get(&r.member))
+                .and_then(|o| o.node())
+                .map_or(
+                    result.boundary.as_ref().and_then(|b| b.centroid()),
+                    |node| Some(Coord::new(node.lon(), node.lat())),
+                );
 
             result
         })

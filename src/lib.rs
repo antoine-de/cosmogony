@@ -21,14 +21,16 @@ pub mod zone_typer;
 
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use cosmogony::{Cosmogony, CosmogonyMetadata, CosmogonyStats};
+use cosmogony::{CosmogonyMetadata, CosmogonyStats};
 use osmpbfreader::{OsmObj, OsmPbfReader};
 use std::collections::BTreeMap;
 use hierarchy_builder::build_hierarchy;
 use failure::Error;
 use failure::ResultExt;
-use zone::ZoneIndex;
 use country_finder::CountryFinder;
+
+pub use cosmogony::Cosmogony;
+pub use zone::{Zone, ZoneIndex, ZoneType};
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn is_admin(obj: &OsmObj) -> bool {

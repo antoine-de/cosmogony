@@ -168,7 +168,6 @@ mod test {
             center: None,
             boundary: Some(mp),
             parent: None,
-            tags: Tags::new(),
             wikidata: None,
             zip_codes: vec![],
         }

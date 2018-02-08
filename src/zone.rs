@@ -46,7 +46,6 @@ pub struct Zone {
     #[serde(serialize_with = "serialize_as_geojson", deserialize_with = "deserialize_as_geojson",
             rename = "geometry", default)]
     pub boundary: Option<geo::MultiPolygon<f64>>,
-    pub tags: Tags,
 
     pub parent: Option<ZoneIndex>,
     pub wikidata: Option<String>,
@@ -105,7 +104,6 @@ impl Zone {
             center: None,
             boundary: None,
             parent: None,
-            tags: relation.tags.clone(),
             wikidata: wikidata,
         })
     }

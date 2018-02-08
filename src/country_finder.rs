@@ -31,22 +31,7 @@ impl<'a> FromIterator<&'a Zone> for CountryFinder {
     fn from_iter<I: IntoIterator<Item = &'a Zone>>(zones: I) -> Self {
         let mut cfinder = CountryFinder::default();
         let mut is_empty = true;
-        zones
-            .into_iter()
-            .filter_map(|z| match z.tags.get(COUNTRY_CODE_TAG) {
-                Some(country_code) => {
-                    info!("adding country {}", &country_code);
-                    is_empty = false;
-                    Some(Country {
-                        iso: country_code.clone(),
-                        zone: z.clone(),
-                    })
-                }
-                None => None,
-            })
-            .for_each(|c| {
-                cfinder.insert_country(c);
-            });
+        
         cfinder.empty = is_empty;
         cfinder
     }

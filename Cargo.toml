@@ -11,7 +11,7 @@ mimir = { git = "https://github.com/CanalTP/mimirsbrunn.git" }
 mimirsbrunn = { git = "https://github.com/CanalTP/mimirsbrunn.git" }
 structopt = "0.1"
 structopt-derive = "0.1"
-osmpbfreader = "*"
+osmpbfreader = { version = "0.11", git = "https://github.com/antoine-de/osmpbfreader-rs", branch = "flat_map_serialiaze" }
 serde = {version = "1", features = ["rc"]}
 serde_derive = "1"
 serde_json = "1"

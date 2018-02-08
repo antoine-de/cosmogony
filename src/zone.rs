@@ -13,6 +13,8 @@ use self::mimirsbrunn::boundaries::{build_boundary, make_centroid};
 use std::collections::BTreeMap;
 use self::geos::GGeom;
 use self::serde::Serialize;
+use std::fmt;
+
 
 #[derive(Serialize, Deserialize, Copy, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[serde(rename_all = "snake_case")]
@@ -32,7 +34,7 @@ pub struct ZoneIndex {
     pub index: usize,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Zone {
     pub id: ZoneIndex,
     pub osm_id: String,
@@ -44,8 +46,6 @@ pub struct Zone {
     #[serde(serialize_with = "serialize_as_geojson", deserialize_with = "deserialize_as_geojson",
             rename = "geometry", default)]
     pub boundary: Option<geo::MultiPolygon<f64>>,
-
-    #[serde(skip_serializing)]
     pub tags: Tags,
 
     pub parent: Option<ZoneIndex>,
@@ -201,5 +201,30 @@ impl Serialize for ZoneIndex {
         S: serde::Serializer,
     {
         serializer.serialize_u64(self.index as u64)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ZoneIndex  {
+    fn deserialize<D>(deserializer: D) -> Result<ZoneIndex, D::Error>
+        where D: serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_u64(ZoneIndexVisitor)
+    }
+}
+
+struct ZoneIndexVisitor;
+
+impl<'de> serde::de::Visitor<'de> for ZoneIndexVisitor {
+    type Value = ZoneIndex;
+
+    fn visit_u64<E>(self, data: u64) -> Result<ZoneIndex, E>
+        where E: serde::de::Error,
+    {
+        Ok(ZoneIndex{index: data as usize})
+    }
+
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("a zone index")
     }
 }

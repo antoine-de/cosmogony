@@ -3,6 +3,7 @@ use crate::utils::bbox_to_rect;
 use crate::zone::{Zone, ZoneIndex};
 use gst::rtree::RTree;
 use std::iter::FromIterator;
+use log::{info, warn};
 
 pub struct ZonesTree {
     tree: RTree<ZoneIndex>,

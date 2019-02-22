@@ -1,14 +1,4 @@
-#[macro_use]
-extern crate failure;
-
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate serde_derive;
-
-#[macro_use]
-extern crate lazy_static;
-
+use log::{info, debug};
 pub mod cosmogony;
 mod country_finder;
 pub mod file_format;

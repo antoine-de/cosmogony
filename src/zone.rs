@@ -6,9 +6,11 @@ use itertools::Itertools;
 use osm_boundaries_utils::build_boundary;
 use osmpbfreader::objects::{OsmId, OsmObj, Relation, Tags};
 use regex::Regex;
-use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
+use log::{info, debug, warn};
+use serde::{Serialize};
+use serde_derive::*;
 
 type Coord = Point<f64>;
 
@@ -83,7 +85,7 @@ pub struct Zone {
 /// we don't add the international names that are equivalent to the default name
 /// to reduce the size of the map
 fn get_international_names(tags: &Tags, default_name: &str) -> BTreeMap<String, String> {
-    lazy_static! {
+    lazy_static::lazy_static! {
         static ref LANG_NAME_REG: Regex = Regex::new("^name:(.+)").unwrap();
     }
 

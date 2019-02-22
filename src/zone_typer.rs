@@ -7,6 +7,8 @@ use std::fmt::{self, Debug};
 use std::fs;
 use std::io::prelude::*;
 use std::path::Path;
+use failure::Fail;
+use serde_derive::*;
 
 #[derive(Debug)]
 pub struct ZoneTyper {
@@ -420,7 +422,7 @@ mod test {
             let mut f = fs::File::open(&a_path.path()).unwrap();
             let mut contents = String::new();
             f.read_to_string(&mut contents)
-                .map_err(|e| warn!("impossible to read file {:?} because {}", a_path, e))
+                .map_err(|e| log::warn!("impossible to read file {:?} because {}", a_path, e))
                 .unwrap();
             // there should be no error while reading a file
             read_libpostal_yaml(&contents).unwrap();

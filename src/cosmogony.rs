@@ -1,6 +1,7 @@
 use crate::zone::Zone;
 use std::collections::BTreeMap;
 use std::fmt;
+use serde_derive::*;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Cosmogony {

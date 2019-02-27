@@ -39,6 +39,7 @@ lazy_static = "1.0.0"
 flate2 = "1.0"
 rayon = "1.0.1"
 include_dir = "0.2"
+snap = "0.2"
 
 [dev-dependencies]
 approx = "0.2.0"

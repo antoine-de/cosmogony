@@ -284,7 +284,7 @@ pub fn read_zones_from_file(
     let f = std::fs::File::open(&input)?;
     let f = std::io::BufReader::new(f);
     match format {
-        OutputFormat::JsonGz | OutputFormat::Json => {
+        OutputFormat::JsonGz | OutputFormat::JsonSnappy | OutputFormat::Json => {
             let cosmo = load_cosmogony(f, format)?;
             Ok(Box::new(cosmo.zones.into_iter().map(|z| Ok(z))))
         }
@@ -293,7 +293,12 @@ pub fn read_zones_from_file(
             let r = flate2::bufread::GzDecoder::new(f);
             let r = std::io::BufReader::new(r);
             Ok(Box::new(read_zones(r)))
-        }
+        },
+        OutputFormat::JsonStreamSnappy => {
+            let r = snap::Reader::new(f);
+            let r = std::io::BufReader::new(r);
+            Ok(Box::new(read_zones(r)))
+        },
     }
 }
 
@@ -313,6 +318,15 @@ pub fn load_cosmogony(
         OutputFormat::JsonStream => from_json_stream(reader),
         OutputFormat::JsonStreamGz => {
             let r = flate2::bufread::GzDecoder::new(reader);
+            let r = std::io::BufReader::new(r);
+            from_json_stream(r)
+        }
+        OutputFormat::JsonSnappy => {
+            let r = snap::Reader::new(reader);
+            serde_json::from_reader(r).map_err(|e| failure::err_msg(e.to_string()))
+        }
+        OutputFormat::JsonStreamSnappy => {
+            let r = snap::Reader::new(reader);
             let r = std::io::BufReader::new(r);
             from_json_stream(r)
         }

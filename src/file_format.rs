@@ -4,15 +4,19 @@ use failure::Error;
 pub enum OutputFormat {
     Json,
     JsonGz,
+    JsonSnappy,
     JsonStream,
     JsonStreamGz,
+    JsonStreamSnappy,
 }
 
-static ALL_EXTENTIONS: [(&str, OutputFormat); 4] = [
+static ALL_EXTENTIONS: [(&str, OutputFormat); 6] = [
     (".json", OutputFormat::Json),
     (".jsonl", OutputFormat::JsonStream),
     (".json.gz", OutputFormat::JsonGz),
     (".jsonl.gz", OutputFormat::JsonStreamGz),
+    (".json.snappy", OutputFormat::JsonSnappy),
+    (".jsonl.snappy", OutputFormat::JsonStreamSnappy),
 ];
 
 impl OutputFormat {

@@ -71,6 +71,14 @@ fn serialize_cosmogony(
             let e = GzEncoder::new(stream, Compression::default());
             to_json_stream(e, cosmogony)?;
         }
+        OutputFormat::JsonSnappy => {
+            let e = snap::Writer::new(stream);
+            serde_json::to_writer(e, cosmogony)?;
+        }
+        OutputFormat::JsonStreamSnappy => {
+            let e = snap::Writer::new(stream);
+            to_json_stream(e, cosmogony)?;
+        }
     };
     Ok(())
 }
